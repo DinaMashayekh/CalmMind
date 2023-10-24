@@ -31,6 +31,7 @@ List<ChatUsers> chatUsers = [
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
+        leading:Icon(Icons.menu),
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context)
@@ -45,10 +46,24 @@ List<ChatUsers> chatUsers = [
              IconButton(
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => const SearchPage())),
-            icon: const Icon(Icons.person),
+  icon: CircleAvatar(
+    backgroundColor: Colors.blue, // Set the desired background color
+    child: Container(
+      width: 50, // Adjust the width and height as needed
+      height: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(
+          image: AssetImage('assets/images/image1.jpg'), // Use a square image
+          fit: BoxFit.cover, // Make sure the image covers the entire circle
+        ),
+      ),
+    ),
+  ),
+             
           ),
         ],
-        backgroundColor: Color(0xff87bfff),
+        backgroundColor: Color(0xff0E4C92),
       ),
       body: PageView(
         controller: _pageController,
@@ -92,9 +107,10 @@ List<ChatUsers> chatUsers = [
             icon: Icon(Icons.calendar_month_rounded),
             label: 'Calendar',
           ),
+          
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xff87bfff),
+        selectedItemColor: Color(0xff0E4C92),
         unselectedItemColor: Colors.black54,
         onTap: (int index) {
           _pageController.animateToPage(
@@ -254,7 +270,7 @@ class SearchPage extends StatelessWidget {
             ),
           ),
         ),
-        backgroundColor: Color(0xff87bfff),
+        backgroundColor: Color(0xff0E4C92),
       ),
     );
   }

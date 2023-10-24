@@ -70,10 +70,10 @@ body: Stack(
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: (messages[index].messageType  == "receiver"?Colors.grey.shade200:Color(0xff87bfff)),
+            color: (messages[index].messageType  == "receiver"?Colors.grey.shade200:Colors.lightBlue),
           ),
           padding: EdgeInsets.all(16),
-          child: Text(messages[index].messageContent, style: TextStyle(fontSize: 15),),
+          child: Text(messages[index].messageContent, style: TextStyle(fontSize: 15,color: (messages[index].messageType  == "receiver"?Colors.black:Colors.white) ),),
         ),
       ),
     );
@@ -117,7 +117,7 @@ body: Stack(
                   FloatingActionButton(
                     onPressed: (){},
                     child: Icon(Icons.send,color: Colors.white,size: 18,),
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.lightBlue,
                     elevation: 0,
                   ),
                 ],

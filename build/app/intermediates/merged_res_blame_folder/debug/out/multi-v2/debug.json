@@ -589,7 +589,7 @@
             "outputFile": "com.example.calm_mind.app-merged_res-11:/values-night-v8_values-night-v8.arsc.flat",
             "map": [
                 {
-                    "source": "C:\\Users\\Eng. Dina Mashayekh\\Desktop\\GP1\\calm_mind\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\Eng. Dina Mashayekh\\Desktop\\CalmMind\\calm_mind\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -1022,7 +1022,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Eng. Dina Mashayekh\\Desktop\\GP1\\calm_mind\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "source": "C:\\Users\\Eng. Dina Mashayekh\\Desktop\\CalmMind\\calm_mind\\android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

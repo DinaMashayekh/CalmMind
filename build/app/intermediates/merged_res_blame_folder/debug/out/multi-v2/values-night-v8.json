@@ -4,7 +4,7 @@
             "outputFile": "com.example.calm_mind.app-mergeDebugResources-9:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Eng. Dina Mashayekh\\Desktop\\GP1\\calm_mind\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\Eng. Dina Mashayekh\\Desktop\\CalmMind\\calm_mind\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

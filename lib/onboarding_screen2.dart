@@ -14,7 +14,7 @@ class OnboardingScreen2 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
                   SizedBox(height:30.0),
-    Image.asset( 'assets/images/undraw_Remote_meeting_re_abe7 (1).png', // Corrected asset path
+    Image.asset( 'assets/images/undraw_Remote_meeting_re_abe7 (2).png', // Corrected asset path
     width: 400, // Adjust the width as needed
     height:400, // Adjust the height as needed
 ),
