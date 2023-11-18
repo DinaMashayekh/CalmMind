@@ -28,15 +28,12 @@ class OnboardingScreen3 extends StatelessWidget {
               style: ElevatedButton.styleFrom(
               primary: Color(0xff87bfff), // Set the button's background color
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),),
-              onPressed: (){Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder:(context) {
-       return BottomNavigationBarExample();
-     },
-     ),
-     );
-                },
+             onPressed: () {
+            BottomNavigationBarExample.navigatorKey.currentState?.rebuildWidget();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => BottomNavigationBarExample()),
+            );
+          },
               child: Text('Get Started',
              style: GoogleFonts.poppins(
     textStyle:TextStyle( 

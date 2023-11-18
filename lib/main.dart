@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:calm_mind/welcomePage.dart';
 import 'package:calm_mind/screens/chatDetailPage.dart';
-import 'package:calm_mind/models/chatUsersModel.dart'; // Import the ChatUsers model.
+import 'package:calm_mind/models/chatUsersModel.dart';
+import 'package:calm_mind/changeNotifier.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => PageControllerProvider(),
+      child: MyApp(),
+    ),
+  );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
