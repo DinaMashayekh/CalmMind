@@ -76,13 +76,7 @@ Widget build(BuildContext context) {
 						Padding( 
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
-								// validator: MultiValidator([ 
-								// 	RequiredValidator( 
-								// 		errorText: 'Enter email address'), 
-								// 	EmailValidator( 
-								// 		errorText: 
-								// 			'Please correct email filled'), 
-								// ]), 
+								
 								decoration: InputDecoration( 
 									hintText: 'Email', 
 									labelText: 'Email', 
@@ -108,16 +102,7 @@ Widget build(BuildContext context) {
 						Padding( 
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
-							// validator: MultiValidator([ 
-							// 	RequiredValidator( 
-							// 		errorText: 'Please enter Password'), 
-							// 	MinLengthValidator(8, 
-							// 		errorText: 
-							// 			'Password must be atlist 8 digit'), 
-							// 	PatternValidator(r'(?=.*?[#!@$%^&*-])', 
-							// 		errorText: 
-							// 			'Password must be atlist one special character') 
-							// ]), 
+							
 							decoration: InputDecoration( 
 								hintText: 'Password', 
 								labelText: 'Password', 
@@ -195,25 +180,9 @@ Widget build(BuildContext context) {
         ),
       ),
      ),     
-		// 				Padding( 
-		// 					padding: const EdgeInsets.all(28.0), 
-		// 					child: Container( 
-		// 					child: ElevatedButton( 
-    //              style: ElevatedButton.styleFrom(
-    //  primary: Color(0xffABD5EF), // Set the button's background color
-    //  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),      ),
-		// 						child: Text( 
-		// 						'Login', 
-		// 						style: TextStyle( 
-		// 							color: Colors.white, fontSize: 22), 
-		// 						), 
-							
+	
 			
-		// 					), 
-		// 					width: MediaQuery.of(context).size.width, 
-		// 					height: 50, 
-		// 					), 
-		// 				), 
+	
 						Center( 
 							child: Padding( 
 							padding: EdgeInsets.fromLTRB(0, 30, 0, 0), 
@@ -227,61 +196,42 @@ Widget build(BuildContext context) {
 							), 
 							), 
 						), 
-Center(
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(0, 30, 40, 0), // Added right padding for spacing
-        child: Container(
-          height: 40,
-          width: 40,
-          child: GestureDetector(
-            onTap: () {
-              // Your click handler code here
-            },
-            child: Image.asset(
-              'assets/images/Facebook_Logo_(2019).png',
-              fit: BoxFit.cover,
+               SizedBox(height: 20.0), // Add some space between the existing content and the new button
+
+      Container(
+        width: size.height * 0.4,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black),
+        ),
+        child: GestureDetector(
+          onTap: () {
+            // Handle button tap
+            // Add your logic here
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/google-icon-2048x2048-czn3g8x8.png',
+                  height: 30.0, // Adjust the height as needed
+                ),
+                SizedBox(width: 10.0), // Add some space between the icon and text
+                Text(
+                  'Google',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(0, 30, 40, 0), // Added right padding for spacing
-        child: Container(
-          height: 40,
-          width: 40,
-          child: GestureDetector(
-            onTap: () {
-              // Your click handler code here
-            },
-            child: Image.asset(
-              'assets/images/google-icon-2048x2048-czn3g8x8.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(0, 30, 0, 0), // No right padding for the last container
-        child: Container(
-          height: 40,
-          width: 40,
-          child: GestureDetector(
-            onTap: () {
-              // Your click handler code here
-            },
-            child: Image.asset(
-              'assets/images/580b57fcd9996e24bc43c516.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
+
 
             
 Padding(

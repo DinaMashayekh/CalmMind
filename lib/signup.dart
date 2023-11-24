@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'; 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:calm_mind/onboarding_screen1.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // import 'package:form_field_validator/form_field_validator.dart';
 
@@ -18,15 +20,63 @@ State<Signup> createState() => _SignupState();
 
 
 Map userData = {}; 
-final _formkey = GlobalKey<FormState>(); 
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 class _SignupState extends State<Signup> {
-  String? _selectedUserType;
+String? _selectedUserType;
+final TextEditingController fullnameController = TextEditingController();
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
 
   void _handleUserTypeChange(String? value) {
     setState(() {
       _selectedUserType = value;
     });
   }
+
+////////////////////send data to backend/////////////////
+ 
+ Future<void> createUser() async {
+  try {
+    final Map<String, dynamic> userData = {
+      'userId': "1234",
+      'fullname': fullnameController.text,
+      'email': emailController.text,
+      'password': passwordController.text,
+      'userType': _selectedUserType?.toLowerCase(), // Convert to lowercase
+    };
+
+    print('Request Body: $userData');
+
+    final response = await http.post(
+    Uri.parse('http://10.0.2.2:3000/api/users'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(userData),
+    );
+
+    if (response.statusCode == 201) {
+      print('User created successfully');
+      // Optionally, you can navigate to the next screen or show a success message.
+        Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => OnboardingScreen1(),
+    ),
+  );
+    } else {
+      print('Failed to create user. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      // Optionally, you can show an error message.
+    }
+  } catch (error) {
+    print('Error creating user: $error');
+    // Handle the error, e.g., display an error message to the user.
+  }
+}
+
+
+//////////////////////////////////////////////////////////////////
+
 
   Widget _customRadio({
     required String? groupValue,
@@ -109,7 +159,6 @@ Widget build(BuildContext context) {
 			child: Padding( 
 				padding: const EdgeInsets.all(12.0), 
 				child: Form( 
-					key: _formkey, 
 					child: Column( 
 						crossAxisAlignment: CrossAxisAlignment.start, 
 						children: <Widget>[ 
@@ -117,13 +166,14 @@ Widget build(BuildContext context) {
 			Padding( 
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
-								// validator: MultiValidator([ 
-								// 	RequiredValidator( 
-								// 		errorText: 'Enter email address'), 
-								// 	EmailValidator( 
-								// 		errorText: 
-								// 			'Please correct email filled'), 
-								// ]), 
+					    controller: fullnameController,
+              validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your fullname';
+                    }
+                    return null;
+                  },
+
 								decoration: InputDecoration( 
 									hintText: 'Fullname', 
 									labelText: 'Fullname', 
@@ -147,19 +197,34 @@ Widget build(BuildContext context) {
 										borderRadius: BorderRadius.all( 
 											Radius.circular(9.0)))))),
 
-
-
+  if (_formKey.currentState?.validate() == true &&
+        fullnameController.text.isEmpty)
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Text(
+          'Please enter your fullname',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 16.0,
+          ),
+        ),
+      ),
 
 						Padding( 
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
-								// validator: MultiValidator([ 
-								// 	RequiredValidator( 
-								// 		errorText: 'Enter email address'), 
-								// 	EmailValidator( 
-								// 		errorText: 
-								// 			'Please correct email filled'), 
-								// ]), 
+				      controller: emailController,
+              validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    // Add email pattern validation
+                    if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                        .hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
 								decoration: InputDecoration( 
 									hintText: 'Email', 
 									labelText: 'Email', 
@@ -184,20 +249,49 @@ Widget build(BuildContext context) {
 											Radius.circular(9.0)))))),
 
 
+   // Display Email error message
+    if (_formKey.currentState?.validate() == true &&
+        emailController.text.isEmpty)
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Text(
+          'Please enter your email',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 16.0,
+          ),
+        ),
+      ),
+if (_formKey.currentState?.validate() == true &&
+        emailController.text.isNotEmpty &&
+        !RegExp(
+                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+            .hasMatch(emailController.text))
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Text(
+          'Please enter a valid email address',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 16.0,
+          ),
+        ),
+      ),
 
 						Padding( 
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
-							// validator: MultiValidator([ 
-							// 	RequiredValidator( 
-							// 		errorText: 'Please enter Password'), 
-							// 	MinLengthValidator(8, 
-							// 		errorText: 
-							// 			'Password must be atlist 8 digit'), 
-							// 	PatternValidator(r'(?=.*?[#!@$%^&*-])', 
-							// 		errorText: 
-							// 			'Password must be atlist one special character') 
-							// ]), 
+	            controller: passwordController,
+					    validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    // Add password pattern validation
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    return null;
+                  },
 							decoration: InputDecoration( 
 								hintText: 'Password', 
 								labelText: 'Password', 
@@ -225,7 +319,33 @@ Widget build(BuildContext context) {
               
 							), 
 						),
-              
+     // Display Email error message
+    if (_formKey.currentState?.validate() == true &&
+        passwordController.text.isEmpty)
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Text(
+          'Please enter your password',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 16.0,
+          ),
+        ),
+      ),
+  if (_formKey.currentState?.validate() == true &&
+        passwordController.text.isNotEmpty &&
+        passwordController.text.length < 8)
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Text(
+          'Password must be at least 8 characters',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 16.0,
+          ),
+        ),
+      ),
+
               //------------------------------------------------
 Row(
   mainAxisAlignment: MainAxisAlignment.start,
@@ -267,25 +387,37 @@ Row(
   ],
 ),
 
-
+ if (_selectedUserType == null)
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    'Please choose a user type',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
 
               //------------------------------------------------
 			
-            SizedBox(height: 30.0),
+     SizedBox(height: 30.0),
     Container(
     width:size.height * 0.4,
     child:ClipRRect(
     borderRadius: BorderRadius.circular(10),
     child: ElevatedButton( // Use ElevatedButton instead of FlatButton
-    onPressed: () {Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder:(context) {
-       return OnboardingScreen1();
-     },
-     ),
-     );
-     },
+    onPressed:() {
+      if (_formKey.currentState?.validate() ?? false) {
+                        // Check if user type is selected
+       if (_selectedUserType != null) {
+                          // If form is valid and user type is selected, call createUser
+            createUser();
+                        }
+                      }
+                    },
+
+ 
     style: ElevatedButton.styleFrom(
     primary: Color(0xff87bfff), // Set the button's background color
     padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
@@ -298,35 +430,13 @@ Row(
         ),
       ),
      ),     
-		// 				Padding( 
-		// 					padding: const EdgeInsets.all(28.0), 
-		// 					child: Container( 
-		// 					child: ElevatedButton( 
-    //              style: ElevatedButton.styleFrom(
-    //  primary: Color(0xffABD5EF), // Set the button's background color
-    //  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),      ),
-		// 						child: Text( 
-		// 						'Login', 
-		// 						style: TextStyle( 
-		// 							color: Colors.white, fontSize: 22), 
-		// 						), 
-		// 						onPressed: () { 
-		// 						if (_formkey.currentState!.validate()) { 
-		// 							print('form submiitted'); 
-		// 						} 
-		// 						}, 
-			
-		// 					), 
-		// 					width: MediaQuery.of(context).size.width, 
-		// 					height: 50, 
-		// 					), 
-		// 				), 
+		
 						Center( 
 							child: Padding( 
 							padding: EdgeInsets.fromLTRB(0, 30, 0, 0), 
 							child: Center( 
 								child: Text( 
-								'Or Sign Up with',              style: GoogleFonts.poppins(
+								'Or Sign Up with Google',              style: GoogleFonts.poppins(
 
 								textStyle: TextStyle( 
 									fontSize: 18, color: Colors.black), 
@@ -334,61 +444,44 @@ Row(
 							), 
 							), 
 						), 
-Center(
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(0, 30, 40, 0), // Added right padding for spacing
-        child: Container(
-          height: 40,
-          width: 40,
-          child: GestureDetector(
-            onTap: () {
-              // Your click handler code here
-            },
-            child: Image.asset(
-              'assets/images/Facebook_Logo_(2019).png',
-              fit: BoxFit.cover,
+
+
+                SizedBox(height: 20.0), // Add some space between the existing content and the new button
+
+      Container(
+        width: size.height * 0.4,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black),
+        ),
+        child: GestureDetector(
+          onTap: () {
+            // Handle button tap
+            // Add your logic here
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/google-icon-2048x2048-czn3g8x8.png',
+                  height: 30.0, // Adjust the height as needed
+                ),
+                SizedBox(width: 10.0), // Add some space between the icon and text
+                Text(
+                  'Google',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(0, 30, 40, 0), // Added right padding for spacing
-        child: Container(
-          height: 40,
-          width: 40,
-          child: GestureDetector(
-            onTap: () {
-              // Your click handler code here
-            },
-            child: Image.asset(
-              'assets/images/google-icon-2048x2048-czn3g8x8.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(0, 30, 0, 0), // No right padding for the last container
-        child: Container(
-          height: 40,
-          width: 40,
-          child: GestureDetector(
-            onTap: () {
-              // Your click handler code here
-            },
-            child: Image.asset(
-              'assets/images/580b57fcd9996e24bc43c516.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
+
 
             
 Padding(

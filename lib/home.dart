@@ -1,3 +1,4 @@
+import 'package:calm_mind/screens/SessionsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calm_mind/models/chatUsersModel.dart';
@@ -11,8 +12,18 @@ import 'package:calm_mind/changeNotifier.dart';
 import 'package:calm_mind/screens/QuestionsPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:calm_mind/validation.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:calm_mind/widgets/RoomsList.dart';
+import 'package:calm_mind/models/RoomsModel.dart';
+import 'package:calm_mind/screens/SessionsPage.dart';
+
+
+
+int TestDone=0;
+
 
 class BottomNavigationBarExample extends StatefulWidget {
+  
     static final GlobalKey<_BottomNavigationBarExampleState> navigatorKey =
       GlobalKey<_BottomNavigationBarExampleState>();
 
@@ -45,6 +56,10 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   final TextEditingController descpController = TextEditingController();
   Event? myEvents; // Define the type of myEvents
   int _selectedIndex = 0;
+  bool isChecked = false;
+  bool isChecked1 = false;
+  bool isChecked2 = false;
+
   final PageController _pageController = PageController();
 
  void changePagenav(int index) {
@@ -175,11 +190,20 @@ Widget buildTextField({String? hint, required TextEditingController controller})
 List<ChatUsers> chatUsers = [
   ChatUsers(name: "Jane Russel", messageText: "Awesome Setup", imageURL: "assets/images/image4.jpg", time: "Now"),
   ChatUsers(name: "Glady's Murphy", messageText: "That's Great", imageURL: "assets/images/image4.jpg", time: "Yesterday"),
- ChatUsers(name: "Jorge Henry", messageText: "Hey where are you?", imageURL: "assets/images/image5.jpg", time: "31 Mar"),
+  ChatUsers(name: "Jorge Henry", messageText: "Hey where are you?", imageURL: "assets/images/image5.jpg", time: "31 Mar"),
   ChatUsers(name: "Philip Fox", messageText: "Busy! Call me in 20 mins", imageURL: "assets/images/image1.jpg", time: "28 Mar"),
   ChatUsers(name: "Debra Hawkins", messageText: "Thankyou, It's awesome", imageURL: "assets/images/image2.jpg", time: "23 Mar"),
   ChatUsers(name: "Jacob Pena", messageText: "will update you in the evening", imageURL: "assets/images/image3.jpg", time: "17 Mar"),
   ChatUsers(name: "Andrey Jones", messageText: "Can you please share the file?", imageURL: "assets/images/image5.jpg", time: "24 Feb"),
+];
+List<Room> Rooms = [
+  Room(name: "Depression", doctorname: "Philip Fox"),
+  Room(name: "PTSD", doctorname: "Jacob Pena"),
+  Room(name: "Anxiety", doctorname: "Debra Hawkins"),
+  Room(name: "Depression", doctorname: "Andrey Jones"),
+  Room(name: "Eating Disorder", doctorname: "Glady's Murphy"),
+  Room(name: "Bipolar Disorder", doctorname: "Jane Russel"),
+
 ];
 
 
@@ -277,18 +301,20 @@ List<ChatUsers> chatUsers = [
 
 
 Widget _buildTreatmentPlanPage() {
-     return Scaffold(
+ return TestDone == 0
+      ?  Scaffold(
       backgroundColor: Colors.white,
       body: Center(
       child:SingleChildScrollView(
         child: Column(
+          
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical:0.0 ),
                   
     child: Image.asset(
-                'assets/images/undraw_survey_05s5(1).png',
+                'assets/images/undraw_Questions_re_1fy7.png',
                 width: 400,
                 height: 400,
               ),
@@ -312,7 +338,9 @@ Widget _buildTreatmentPlanPage() {
               style: ElevatedButton.styleFrom(
     primary: Color(0xff87bfff), // Set the button's background color
     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),),
-               onPressed: () {Navigator.push(
+     onPressed: () {
+        TestDone=1;        
+      Navigator.push(
       context, 
       MaterialPageRoute(
         builder:(context) {
@@ -334,7 +362,287 @@ Widget _buildTreatmentPlanPage() {
         ),
       ),
       ),
-    );
+    )
+  :Scaffold(
+  backgroundColor: Colors.grey.shade100,
+  body: SingleChildScrollView(
+    child: Column(
+      children: [
+
+         Padding(
+      padding: const EdgeInsets.only(top:50.0, left:20), 
+    child:Text(
+      'Welcome back, Salma',
+      style: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+     ),
+     
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 10, right:20),
+
+          child:Container(
+
+           height: 70,
+           
+          child: ListTile(
+           
+    contentPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 15), // Adjust vertical padding as needed
+
+             shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+
+      ),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(
+              'Your Treatment Plan Progress',
+    
+    style: GoogleFonts.poppins(
+    textStyle:TextStyle( 
+      color: Colors.black87,
+    fontSize: 16.0, // Change the size as needed
+    fontWeight: FontWeight.normal,  ),
+            ),
+            ),
+          ),
+          trailing: Container(
+            width: 50.0, // Adjust the width to fit the CircularPercentIndicator
+            child: CircularPercentIndicator(
+              radius: 25.0,
+              lineWidth: 3.0,
+              percent: 0.75, // Change this value based on your requirement
+              center: Text("75%"),
+              progressColor: Colors.blue,
+            ),
+          ),
+        ),
+          ),
+     
+     ),
+ SizedBox(height: 30),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+    Container(
+      width: 180,
+      height: 80,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: ElevatedButton(
+          onPressed: () {
+            // Handle button click
+          },
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xff87bfff),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.emoji_emotions_outlined,
+                color: Colors.white,
+                size: 20, // Adjust the size of the icon
+              ),
+            Text(
+                "Mood Tracking"),
+           
+              
+
+            ],
+          ),
+        ),
+      ),
+    ),
+    Container(
+      width: 180,
+      height: 80,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: ElevatedButton(
+          onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SessionsPage()), // Navigate to the next screen
+                );
+              },
+          
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xff0E4C92),
+          ),
+          child: Row(
+
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+
+              Icon(
+                Icons.access_time,
+                color: Colors.white,
+                size: 20, // Adjust the size of the icon
+              ),
+
+            Text(
+                "Upcoming Sessions"),
+           
+              
+
+            ],
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
+        Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+  
+    Padding(
+      padding: const EdgeInsets.only(top:30.0, left:20), 
+    child:Text(
+      "Today's tasks",
+      style: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+     
+  
+),
+Padding(
+  padding: const EdgeInsets.only(top: 20.0, left: 10, right: 20),
+  child: SizedBox(
+   
+    height: 100, // Adjust the height as needed
+    child: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        
+      ),
+      child: ListTile(
+     
+        title: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Text(
+            'Meditation',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        subtitle:Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+           child: Text('10 min'),
+
+        ),
+         
+        trailing: Transform.scale(
+       scale: 1.5,
+        child:Checkbox(
+          
+          value: isChecked,
+          onChanged: (value) {
+            setState(() {
+              isChecked = value!;
+            });
+          },
+activeColor: Color(0xff0E4C92),
+         ),
+        ),
+  ),
+    
+      ),
+    ),
+  ),
+
+Padding(
+  padding: const EdgeInsets.only(top: 10.0, left: 10, right: 20),
+  child: SizedBox(
+    height: 100, // Adjust the height as needed
+    child: Card(
+
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+      
+        title: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Text(
+            'Outdoor activity',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        subtitle:Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+           child: Text('Check your current mental health or do the test again!'),
+
+        ), 
+        trailing: Transform.scale(
+       scale: 1.5,
+        child:Checkbox(
+          
+          value: isChecked1,
+          onChanged: (value) {
+            setState(() {
+              isChecked1 = value!;
+            });
+          },
+activeColor: Color(0xff0E4C92),
+         ),
+        ),
+      ),
+    ),
+  ),
+),
+  ],
+        ),
+Padding(
+  padding: const EdgeInsets.only(top: 10.0, left: 10, right: 20),
+  child: SizedBox(
+    height: 100, // Adjust the height as needed
+    child: Card(
+
+      shape: RoundedRectangleBorder(
+        
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+       
+        title: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Text(
+            'Reading',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        subtitle:Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+           child: Text('Check your current mental health or do the test again!'),
+
+        ), 
+        trailing: Transform.scale(
+       scale: 1.5,
+        child:Checkbox(
+          
+          value: isChecked2,
+          onChanged: (value) {
+            setState(() {
+              isChecked2 = value!;
+            });
+          },
+activeColor: Color(0xff0E4C92),
+         ),
+        ),
+      ),
+    ),
+  ),
+),
+      ],
+    ),
+  ),
+);
 }
 
 Widget _buildCalendarPage() {
@@ -478,7 +786,7 @@ Widget _buildCalendarPage() {
 
 Widget buildRoomsPage( ) {
 return Scaffold(
-    backgroundColor: Colors.white, // Set the background color of the entire page to white
+    backgroundColor: Colors.grey.shade100, // Set the background color of the entire page to white
     body: SingleChildScrollView(
     physics: BouncingScrollPhysics(),
     
@@ -494,8 +802,9 @@ return Scaffold(
                 Text(
                   "Rooms",
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                ),
-                // Container(
+                ), 
+                 //add new room
+             // Container(
                 //   padding: EdgeInsets.only(left: 12, right: 12, top: 6, bottom: 6),
                 //   height: 30,
                 //   decoration: BoxDecoration(
@@ -519,18 +828,16 @@ return Scaffold(
         ),
         // Add your ListView.builder here
 ListView.builder(
-  itemCount: chatUsers.length,
+  itemCount: Rooms.length,
   shrinkWrap: true,
   padding: EdgeInsets.only(top: 16),
   physics: NeverScrollableScrollPhysics(),
 
   itemBuilder: (context, index){
-    return ConversationList(
-      name: chatUsers[index].name,
-      messageText: chatUsers[index].messageText,
-      imageUrl: chatUsers[index].imageURL,
-      time: chatUsers[index].time,
-      isMessageRead: (index == 0 || index == 3)?true:false,
+    return RoomsList(
+      name: Rooms[index].name,
+      doctorname: Rooms[index].doctorname,
+    
     );
   },
 ),

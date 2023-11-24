@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
 import 'package:calm_mind/home.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:calm_mind/Event.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart'; 
+
 
 
 class detail extends StatelessWidget { 

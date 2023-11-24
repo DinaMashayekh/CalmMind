@@ -68,22 +68,22 @@ Widget build(BuildContext context) {
                   "Nearly every day": null,
                 
                 }),
-          //          Question(
-          //       question: "Feeling tired or having little energy?",
-          //       isMandatory: true,
-          //       answerChoices: const {
-          //       "Not at all": null,
-          //         "Several days": null,
-          //         "Nearly every day": null,
-          //       }),
-          //          Question(
-          //       question: "Poor appetite or overeating?",
-          //       isMandatory: true,
-          //       answerChoices: const {
-          //       "Not at all": null,
-          //         "Several days": null,
-          //         "Nearly every day": null,
-          //       }),
+                   Question(
+                question: "Feeling tired or having little energy?",
+                isMandatory: true,
+                answerChoices: const {
+                "Not at all": null,
+                  "Several days": null,
+                  "Nearly every day": null,
+                }),
+                   Question(
+                question: "Poor appetite or overeating?",
+                isMandatory: true,
+                answerChoices: const {
+                "Not at all": null,
+                  "Several days": null,
+                  "Nearly every day": null,
+                }),
           //        Question(
           //       question: " Feeling nervous, anxious, or on edge?",
           //       isMandatory: true,

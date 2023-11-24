@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:calm_mind/models/chatMessageModel.dart';
 class ChatDetailPage extends StatefulWidget{
+
+
+  final String? name;
+ final String? image;
+
+ChatDetailPage({this.name, this.image});
+
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -34,7 +41,7 @@ List<ChatMessage> messages = [
                 ),
                 SizedBox(width: 2,),
                 CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/image1.jpg"),
+                  backgroundImage: AssetImage(widget.image?? ''),
                   maxRadius: 20,
                 ),
                 SizedBox(width: 12,),
@@ -43,7 +50,7 @@ List<ChatMessage> messages = [
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Kriss Benwat",style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
+                      Text(widget.name ?? '',style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
                       SizedBox(height: 6,),
                       Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
                     ],

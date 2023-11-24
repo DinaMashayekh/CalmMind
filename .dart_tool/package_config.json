@@ -362,6 +362,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "percent_indicator",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/percent_indicator-4.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "platform",
       "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/platform-3.1.2",
       "packageUri": "lib/",
@@ -542,7 +548,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2023-11-18T19:13:37.065960Z",
+  "generated": "2023-11-23T17:37:18.735728Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }
