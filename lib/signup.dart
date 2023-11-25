@@ -26,6 +26,7 @@ String? _selectedUserType;
 final TextEditingController fullnameController = TextEditingController();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
+bool _buttonClicked = false;
 
   void _handleUserTypeChange(String? value) {
     setState(() {
@@ -34,11 +35,22 @@ final TextEditingController passwordController = TextEditingController();
   }
 
 ////////////////////send data to backend/////////////////
- 
+void _validateAndCreateUser() {
+  setState(() {
+    _buttonClicked = true;
+  });
+
+  if (_formKey.currentState?.validate() == true) {
+    // If the form is valid, check if the user type is selected
+
+      createUser();
+    
+  }
+}
+
  Future<void> createUser() async {
   try {
     final Map<String, dynamic> userData = {
-      'userId': "1234",
       'fullname': fullnameController.text,
       'email': emailController.text,
       'password': passwordController.text,
@@ -63,7 +75,16 @@ final TextEditingController passwordController = TextEditingController();
       builder: (context) => OnboardingScreen1(),
     ),
   );
-    } else {
+    } else if (response.statusCode == 400 &&
+        jsonDecode(response.body)['error'] == 'Email already exists') {
+      // Display email already exists error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Email already exists'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }else {
       print('Failed to create user. Status code: ${response.statusCode}');
       print('Response body: ${response.body}');
       // Optionally, you can show an error message.
@@ -159,6 +180,7 @@ Widget build(BuildContext context) {
 			child: Padding( 
 				padding: const EdgeInsets.all(12.0), 
 				child: Form( 
+          key: _formKey,
 					child: Column( 
 						crossAxisAlignment: CrossAxisAlignment.start, 
 						children: <Widget>[ 
@@ -197,18 +219,7 @@ Widget build(BuildContext context) {
 										borderRadius: BorderRadius.all( 
 											Radius.circular(9.0)))))),
 
-  if (_formKey.currentState?.validate() == true &&
-        fullnameController.text.isEmpty)
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Text(
-          'Please enter your fullname',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
-      ),
+ 
 
 						Padding( 
 							padding: const EdgeInsets.all(12.0), 
@@ -249,35 +260,7 @@ Widget build(BuildContext context) {
 											Radius.circular(9.0)))))),
 
 
-   // Display Email error message
-    if (_formKey.currentState?.validate() == true &&
-        emailController.text.isEmpty)
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Text(
-          'Please enter your email',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
-      ),
-if (_formKey.currentState?.validate() == true &&
-        emailController.text.isNotEmpty &&
-        !RegExp(
-                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-            .hasMatch(emailController.text))
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Text(
-          'Please enter a valid email address',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
-      ),
-
+ 
 						Padding( 
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
@@ -319,33 +302,7 @@ if (_formKey.currentState?.validate() == true &&
               
 							), 
 						),
-     // Display Email error message
-    if (_formKey.currentState?.validate() == true &&
-        passwordController.text.isEmpty)
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Text(
-          'Please enter your password',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
-      ),
-  if (_formKey.currentState?.validate() == true &&
-        passwordController.text.isNotEmpty &&
-        passwordController.text.length < 8)
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Text(
-          'Password must be at least 8 characters',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 16.0,
-          ),
-        ),
-      ),
-
+  
               //------------------------------------------------
 Row(
   mainAxisAlignment: MainAxisAlignment.start,
@@ -386,8 +343,9 @@ Row(
     ),
   ],
 ),
-
- if (_selectedUserType == null)
+// Display user type error message
+              if (_buttonClicked &&_formKey.currentState?.validate() == false &&
+                  _selectedUserType == null)
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
@@ -399,6 +357,7 @@ Row(
                   ),
                 ),
 
+
               //------------------------------------------------
 			
      SizedBox(height: 30.0),
@@ -407,15 +366,11 @@ Row(
     child:ClipRRect(
     borderRadius: BorderRadius.circular(10),
     child: ElevatedButton( // Use ElevatedButton instead of FlatButton
-    onPressed:() {
-      if (_formKey.currentState?.validate() ?? false) {
-                        // Check if user type is selected
-       if (_selectedUserType != null) {
-                          // If form is valid and user type is selected, call createUser
-            createUser();
-                        }
-                      }
-                    },
+     onPressed: () {
+    setState(() {
+      _validateAndCreateUser();
+    });
+  },
 
  
     style: ElevatedButton.styleFrom(
