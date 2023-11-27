@@ -16,7 +16,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:calm_mind/widgets/RoomsList.dart';
 import 'package:calm_mind/models/RoomsModel.dart';
 import 'package:calm_mind/screens/SessionsPage.dart';
-
+import 'package:calm_mind/shared_preferences_helper.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 int TestDone=0;
@@ -47,6 +49,7 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
    void rebuildWidget() {
     setState(() {});
   }
+  
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedCalendarDate = DateTime.now();
   DateTime _initialCalendarDate = DateTime(DateTime.now().year - 1, 1, 1);
@@ -59,6 +62,8 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   bool isChecked = false;
   bool isChecked1 = false;
   bool isChecked2 = false;
+  List<Event> events = [];
+  Map<DateTime, List<Event>> mySelectedEvents = {};
 
   final PageController _pageController = PageController();
 
@@ -74,26 +79,124 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
     super.dispose();
   }
 
+  Map<DateTime, List<Event>> groupAppointmentsByDate(List<Event> appointments) {
+  Map<DateTime, List<Event>> groupedAppointments = {};
 
-Map<DateTime, List<Event>> mySelectedEvents = {}; 
-List<Event> events = [
-  Event(
-    eventTitle: "Event 1",
-    availabletimes: "11:00 AM",
-    eventDate: DateTime(2023, 10, 25),
-  ),
-  Event(
-    eventTitle: "Event 2",
-    availabletimes: "11:00 AM",
-    eventDate: DateTime(2023, 10, 26),
-  ),
-  Event(
-    eventTitle: "Event 3",
-    availabletimes: "11:00 AM",
-    eventDate: DateTime(2023, 10, 27),
-  ),
-  // Add more events here
-];
+  for (var appointment in appointments) {
+    DateTime date = appointment.eventDate;
+    
+    // If the date is not already a key in the map, add it with an empty list
+    groupedAppointments.putIfAbsent(date, () => []);
+
+    // Add the appointment to the list corresponding to the date
+    groupedAppointments[date]!.add(appointment);
+  }
+
+  return groupedAppointments;
+}
+// Assuming this is a method where you want to fetch and display appointments
+void loadAppointments() async {
+  final int? userId = await getUserId();
+
+  try {
+    print('Fetching appointments for userId: $userId');
+
+    // Check if userId is not null before making the request
+    if (userId != null) {
+      List<Event> appointments = await fetchAppointments(userId);
+
+      print('Appointments loaded: $appointments');
+
+      // Assuming mySelectedEvents is a Map<DateTime, List<Event>>
+      setState(() {
+        // Clear existing events for the user
+        mySelectedEvents.clear();
+
+        // Group appointments by date
+  for (var appointment in appointments) {
+  final date = appointment.eventDate;
+  if (date != null) {
+    mySelectedEvents[date] = [...mySelectedEvents[date] ?? [], appointment];
+  }
+}
+
+
+      });
+
+      print('mySelectedEvents after loading: $mySelectedEvents');
+    } else {
+      print('User ID is null. Cannot fetch appointments.');
+      // Handle the case where userId is null
+    }
+  } catch (error) {
+    print('Error loading appointments: $error');
+    // Handle error loading appointments
+  }
+}
+
+
+// Function to fetch appointments for a specific patientId
+Future<List<Event>> fetchAppointments(int? userId) async {
+  try {
+    if (userId == null) {
+      print('Error: UserId is null.');
+      return []; // or return null or an empty list based on your logic
+    }
+
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api//appointments/$userId'));
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      final List<dynamic> data = json.decode(response.body)['appointments'];
+
+     List<Event> appointments = data.map((appointment) {
+  // Ensure that 'meetingType' is a non-null String or provide a default value.
+  final String? meetingType = appointment['meetingType'] ?? 'DefaultMeetingType';
+
+  // Ensure that 'eventTitle' is a non-null String.
+  final String eventTitle = appointment['eventTitle'] ?? 'DefaultEventTitle';
+
+  // Ensure that 'eventDate' is a non-null String and can be parsed to DateTime.
+  final String? serverDateString = appointment['eventDate'];
+  final DateTime eventDate =
+      serverDateString != null ? DateTime.tryParse(serverDateString) ?? DateTime.now() : DateTime.now();
+
+  // Ensure that 'availableTimes' is a non-null String or provide a default value.
+  final String? availableTimes = appointment['availableTimes'] ?? 'DefaultAvailableTimes';
+
+  // Ensure that 'doctor' is a Map and contains the required fields.
+  final Map<String, dynamic>? doctorData = appointment['doctor'];
+  final Doctor? doctor = doctorData != null
+      ? Doctor(
+          name: doctorData['name'] ?? 'DefaultDoctorName',
+          image: doctorData['image'] ?? 'DefaultDoctorImage',
+          specialistId: doctorData['specialistId'] ?? -1, // Provide a default value or handle differently
+        )
+      : null;
+
+  return Event(
+    meetingType: meetingType,
+    doctor: doctor,
+    eventTitle: eventTitle,
+    availabletimes: availableTimes,
+    eventDate: eventDate,
+  );
+}).toList();
+
+         
+
+      return appointments;
+    } else {
+      print('Failed to load appointments. Status code: ${response.statusCode}');
+      return []; // or return null or an empty list based on your logic
+    }
+  } catch (error) {
+    print('Error fetching appointments: $error');
+    return []; // or return null or an empty list based on your logic
+  }
+}
+
+
   @override
   void initState() {
     super.initState();
@@ -102,13 +205,28 @@ List<Event> events = [
     selectedCalendarDate = DateTime.now();
 
     // ... other initialization code ...
+  loadAppointments();
 
   }
  
   
-List<Event> _listOfDayEvents(DateTime selectedCalendarDate) {
-  return events.where((event) => event.eventDate.isAtSameMomentAs(selectedCalendarDate)).toList();
+List<Event> _listOfDayEvents(DateTime? selectedCalendarDate) {
+  if (selectedCalendarDate == null) {
+    return [];
+  }
+
+  print('Selected Calendar Date: $selectedCalendarDate');
+
+  // Retrieve the list of events for the selected calendar date
+  // from the mySelectedEvents map, or initialize an empty list.
+  final selectedDateEvents = mySelectedEvents[selectedCalendarDate] ?? [];
+
+  print('Appointments for $selectedCalendarDate: $selectedDateEvents');
+
+  return selectedDateEvents;
 }
+
+
 void _navigateToAddEventScreen() async {
   // Use Navigator.push to navigate to 'SecondScreen'.
   final result = await Navigator.push(
@@ -116,21 +234,8 @@ void _navigateToAddEventScreen() async {
     MaterialPageRoute(
       builder: (context) => SecondScreen(
         selectedDate: selectedCalendarDate,
-        onEventAdded: (Event event) {
-          setState(() {
-            // Add the event to your list of events.
-            events.add(event);
-
-            // Update the events for the selected date
-            mySelectedEvents[selectedCalendarDate] = mySelectedEvents[selectedCalendarDate] ?? [];
-            mySelectedEvents[selectedCalendarDate]!.add(event);
-          });
-        },
-        doctorsList: [
-          Doctor(name: 'Dr. John Doe', image: 'assets/images/image3.jpg'),
-          Doctor(name: 'Dr. Jane Smith', image: 'assets/images/image1.jpg'),
-          // Add more doctors as needed
-        ],
+   
+      
         availableTimes: [
           '8:00 AM',
           '9:00 AM',
@@ -145,26 +250,9 @@ void _navigateToAddEventScreen() async {
       ),
     ),
   );
-  // Check if a result is returned and if it is of type 'MyEvents'.
-  if (result != null && result is Event) {
-    // Retrieve the list of events for
-    // the selected calendar date
-    // or initialize an empty list.
-    final selectedDateEvents = mySelectedEvents[selectedCalendarDate] ?? [];
-
-    // Update the list of events with
-    // the result from 'SecondScreen'.
-    setState(() {
-      // Add the new event to the list
-      selectedDateEvents.add(result);
-
-      // Update the events for the selected date
-      mySelectedEvents[selectedCalendarDate] = selectedDateEvents;
-    });
-  }
+ 
 }
 
-// This function displays an AlertDialog to add a new event. 
 
 // This function creates and returns a TextField widget with specified properties. 
 Widget buildTextField({String? hint, required TextEditingController controller}) { 
@@ -646,6 +734,8 @@ activeColor: Color(0xff0E4C92),
 }
 
 Widget _buildCalendarPage() {
+    // loadAppointments(); // Call the function when the calendar page is built
+
   return Scaffold(
 
       floatingActionButton: FloatingActionButton( 
@@ -688,14 +778,18 @@ Widget _buildCalendarPage() {
       return isSameDay(selectedCalendarDate, currentSelectedDate);
     
   },
-  onDaySelected: (selectedDay, focusedDay) {
-    if (!isSameDay(selectedCalendarDate, selectedDay)) {
-      setState(() {
-        selectedCalendarDate = selectedDay;
-        _focusedCalendarDate = focusedDay;
-      });
-    }
-  }, 
+ onDaySelected: (selectedDay, focusedDay) {
+  if (!isSameDay(selectedCalendarDate, selectedDay)) {
+    setState(() {
+      selectedCalendarDate = selectedDay;
+      _focusedCalendarDate = focusedDay;
+    });
+    // Load appointments for the selected date when the date is changed.
+    loadAppointments();
+  }
+},
+
+
    calendarStyle: CalendarStyle(
     selectedDecoration: BoxDecoration(
       shape: BoxShape.circle,
@@ -723,7 +817,9 @@ Widget _buildCalendarPage() {
                     context, 
                     MaterialPageRoute( 
                       builder: (context) =>detail( 
-                        eventTitle: myEvents.eventTitle,
+                        // eventTitle: myEvents.eventTitle,
+                        meetingType:myEvents.meetingType ,
+                        eventTitle: "Appointment",
                       availableTime:myEvents.availabletimes,
                         eventDate: selectedCalendarDate!,
                        doctor: myEvents.doctor,

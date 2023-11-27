@@ -200,6 +200,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "flutter_web_plugins",
+      "rootUri": "file:///C:/flutter/flutter/packages/flutter_web_plugins",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "frontend_server_client",
       "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/frontend_server_client-3.2.0",
       "packageUri": "lib/",
@@ -213,7 +219,7 @@
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.1.0",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-4.0.5",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -404,6 +410,48 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "shared_preferences",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_android",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_foundation",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.3.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_linux",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_linux-2.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_platform_interface",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_platform_interface-2.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_web",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_web-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_windows",
+      "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "shelf",
       "rootUri": "file:///C:/Users/Eng.%20Dina%20Mashayekh/AppData/Local/Pub/Cache/hosted/pub.dev/shelf-1.4.1",
       "packageUri": "lib/",
@@ -545,10 +593,10 @@
       "name": "calm_mind",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-11-23T17:37:18.735728Z",
+  "generated": "2023-11-27T15:26:39.434043Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }

@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:calm_mind/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class Login extends StatefulWidget { 
 const Login({Key? key}) : super(key: key); 
 
@@ -18,6 +20,7 @@ Map userData = {};
 final _formkey = GlobalKey<FormState>(); 
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
+ bool _obscureText = true;
 
 
   Future<void> loginUser() async {
@@ -33,13 +36,19 @@ final TextEditingController passwordController = TextEditingController();
         }),
       );
 
-      if (response.statusCode == 200) {
-        // Login successful
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => BottomNavigationBarExample()),
-        );
-      } else if (response.statusCode == 404) {
+if (response.statusCode == 200) {
+   final Map<String, dynamic> responseData = json.decode(response.body);
+
+      // Check if 'user' key exists in responseData
+      if (responseData.containsKey('user')) {
+        // Save userId in shared preferences
+        await saveUserId(responseData['user']['userId']);
+      }
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => BottomNavigationBarExample()),
+  );
+}    else if (response.statusCode == 404) {
         // User not found
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -69,6 +78,10 @@ final TextEditingController passwordController = TextEditingController();
     }
   }
 
+  Future<void> saveUserId(int userId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('userId', userId);
+  }
 @override 
 
 Widget build(BuildContext context) { 
@@ -157,16 +170,28 @@ Widget build(BuildContext context) {
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
 							controller: passwordController,
-							decoration: InputDecoration( 
+				      obscureText: _obscureText,
+              decoration: InputDecoration( 
 								hintText: 'Password', 
 								labelText: 'Password', 
                     labelStyle: TextStyle(
         color: Color(0xff0E4C92), // Change the label text color here
       ),
-								prefixIcon: Icon( 
-								Icons.key, 
-								color: Color(0xff0E4C92), 
-								), 
+								 prefixIcon: Icon(
+            Icons.key,
+            color: Color(0xff0E4C92),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Color(0xff0E4C92),
+            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
 								errorStyle: TextStyle(fontSize: 18.0), 
 								    focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Color(0xff0E4C92)), // Change the color as desired

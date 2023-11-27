@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:calm_mind/onboarding_screen1.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:form_field_validator/form_field_validator.dart';
 
@@ -27,6 +28,7 @@ final TextEditingController fullnameController = TextEditingController();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 bool _buttonClicked = false;
+bool _obscureText = true;
 
   void _handleUserTypeChange(String? value) {
     setState(() {
@@ -69,7 +71,10 @@ void _validateAndCreateUser() {
 
     if (response.statusCode == 201) {
       print('User created successfully');
-      // Optionally, you can navigate to the next screen or show a success message.
+      // Login successful
+        final Map<String, dynamic> responseData = json.decode(response.body);
+       // Save userId in shared preferences
+      await saveUserId(responseData['userId']);
         Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => OnboardingScreen1(),
@@ -93,8 +98,12 @@ void _validateAndCreateUser() {
     print('Error creating user: $error');
     // Handle the error, e.g., display an error message to the user.
   }
-}
 
+}
+  Future<void> saveUserId(int userId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('userId', userId);
+  }
 
 //////////////////////////////////////////////////////////////////
 
@@ -265,7 +274,8 @@ Widget build(BuildContext context) {
 							padding: const EdgeInsets.all(12.0), 
 							child: TextFormField( 
 	            controller: passwordController,
-					    validator: (value) {
+					   	obscureText: _obscureText,
+              validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
@@ -285,6 +295,17 @@ Widget build(BuildContext context) {
 								Icons.key, 
 								color: Color(0xff0E4C92), 
 								), 
+                suffixIcon: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Color(0xff0E4C92),
+            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
 								errorStyle: TextStyle(fontSize: 18.0), 
 								    focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Color(0xff0E4C92)), // Change the color as desired

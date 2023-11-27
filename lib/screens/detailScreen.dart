@@ -11,14 +11,16 @@ import 'package:intl/intl.dart';
 class detail extends StatelessWidget { 
   final String eventTitle; 
   final DateTime eventDate; 
-final Doctor? doctor;
+  final Doctor? doctor;
   final String? availableTime;
+  final String? meetingType;
     
   detail({ 
     required this.eventTitle, 
     required this.eventDate,
     required this.doctor,
     required this.availableTime, 
+    required this.meetingType,
   });
   
   @override 
@@ -79,7 +81,7 @@ Center(
         Container(
           child: CircleAvatar(
             backgroundImage: doctor?.image != null
-                ? AssetImage(doctor!.image)
+                ? AssetImage('assets/images/${doctor!.image}')
                 : AssetImage('assets/images/download.png'), // Replace 'assets/default_image.jpg' with your default image path
             maxRadius: 40,
           ),
@@ -124,7 +126,33 @@ Center(
   ],
 ),
 
-	
+	//---------------------------------------------------------
+  Row( 
+    mainAxisAlignment: MainAxisAlignment.center, // Center contents horizontally
+children: [ 
+
+
+Center(
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center, // Center contents horizontally
+    children: [
+      if ( meetingType!= null)
+       
+      Text(' ${meetingType ?? 'No meeting type Selected'}'  ,
+    
+    style: GoogleFonts.poppins(
+    textStyle:TextStyle( 
+      color: Colors.black87,
+    fontSize: 20.0, // Change the size as needed
+    fontWeight: FontWeight.normal,  ),
+            ),),
+    ],
+  ),
+),
+
+
+  ],
+),
 
 
     Padding( 
